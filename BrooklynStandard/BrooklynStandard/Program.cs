@@ -1,5 +1,13 @@
+using System.Reflection.Emit;
+using System.Buffers;
+using System.Reflection.Metadata;
+using System;
+using System.Collections.Immutable;
 var builder = WebApplication.CreateBuilder(args);
-
+builder.Services.AddDbContext<AppDbContext>(options =>
+{
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DbConnection"));
+});
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
@@ -21,7 +29,7 @@ app.UseAuthorization();
 app.MapStaticAssets();
 
 app.MapControllerRoute(
-    name: "default",
+\    name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
 
