@@ -1,8 +1,8 @@
 using System.Text;
 using System;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 namespace BrooklynStandard.Models.Data
-[Route("api/[controller]")]
-[ApiController]
 {
     public class UserRequestController : ControllerBase
     {
@@ -12,7 +12,13 @@ namespace BrooklynStandard.Models.Data
         _dbContext = dbContext;
 
         [HttpGet]
-        public async Task<List<UserRequest?> GetById(int id)
+        public async Task<List<UserRequest>> Get()
+        {
+            return await _dbContext.UserRequests.ToListAsync();
+        }
+
+        [HttpGet("{id}")]
+        public async Task<UserRequest>GetById(int id)
         {
             return await _dbContext.UserRequests.FirstOrDefaultAsync(x => x.Id == id);
         }
@@ -21,14 +27,13 @@ namespace BrooklynStandard.Models.Data
         public async Task<ActionResult> Create([FromBody] UserRequest userRequest)
         {
             if(String.IsNullOrWhiteSpace(userRequest.FullName) ||
-            string.IsNullOrWhiteSpace(userRequest.Email)
             string.IsNullOrWhiteSpace(userRequest.Request))
             {
                 return BadRequest("Invalid Request");
             }
             await _dbContext.UserRequests.AddAsync(userRequest);
             await _dbContext.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetById), new { id = userRequest.Id }, userRequset);
+            return CreatedAtAction(nameof(GetById), new { id = userRequest.Id }, userRequest);
         }
 
         [HttpPut]
@@ -36,7 +41,6 @@ namespace BrooklynStandard.Models.Data
         {
             if(userRequest.Id == 0 ||
             string.IsNullOrWhiteSpace(userRequest.FullName) ||
-            string.IsNullOrWhiteSpace(userRequest.Email) ||
             string.IsNullOrWhiteSpace(userRequest.Request))
             {
                 return BadRequest("Invalid Request");

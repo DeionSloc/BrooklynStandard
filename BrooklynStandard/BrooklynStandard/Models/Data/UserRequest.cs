@@ -1,13 +1,14 @@
 using System.Data.Common;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 namespace BrooklynStandard.Models.Data
 
-[Table("request_data")]
 {
+    [Table("request_data")]
     public class UserRequest
     {
         [Key]
-        [Database(DatabaseGeneratedOption.Identity)]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("id")]
         public int Id { get; set; }
 
@@ -15,7 +16,7 @@ namespace BrooklynStandard.Models.Data
         public string? FullName { get; set; }
 
         [Column("email")]
-        public email? Email { get; set; }
+        public string? Email { get; set; }
 
         [Column("number")]
         public int? Number { get; set; }
@@ -24,7 +25,8 @@ namespace BrooklynStandard.Models.Data
         public string? Company { get; set; }
 
         [Column("file")]
-        public file? File { get; set;}
+        public IFormFile? File { get; set; }
+
 
         [Column("request")]
         public string? Request { get; set; }
