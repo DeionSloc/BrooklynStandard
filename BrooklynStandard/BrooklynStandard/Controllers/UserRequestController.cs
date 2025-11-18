@@ -7,9 +7,13 @@ namespace BrooklynStandard.Models.Data
     public class UserRequestController : ControllerBase
     {
         private readonly AppDbContext _dbContext;
+        private readonly IWebHostEnvironment _environment;
 
-        public UserRequestController(AppDbContext dbContext) => 
-        _dbContext = dbContext;
+        public UserRequestController(AppDbContext dbContext, IWebHostEnvironment environment)
+        {
+            _dbContext = dbContext;
+            _environment = environment;    
+        } 
 
         [HttpGet]
         public async Task<List<UserRequest>> Get()
@@ -26,7 +30,8 @@ namespace BrooklynStandard.Models.Data
         [HttpPost]
         public async Task<ActionResult> Create([FromBody] UserRequest userRequest)
         {
-            if(String.IsNullOrWhiteSpace(userRequest.FullName) ||
+            if(string.IsNullOrWhiteSpace(userRequest.FullName) ||
+            string.IsNullOrWhiteSpace(userRequest.Email) ||
             string.IsNullOrWhiteSpace(userRequest.Request))
             {
                 return BadRequest("Invalid Request");

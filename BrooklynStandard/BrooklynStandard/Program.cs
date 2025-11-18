@@ -3,6 +3,7 @@ using System.Buffers;
 using System.Reflection.Metadata;
 using System;
 using System.Collections.Immutable;
+using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
