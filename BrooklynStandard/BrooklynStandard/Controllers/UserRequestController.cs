@@ -1,20 +1,22 @@
-using System.Text;
-using System;
+using BrooklynStandard.Controllers;
+using BrooklynStandard.Models.Data;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-namespace BrooklynStandard.Models.Data
+
+namespace BrooklynStandard
 {
-    public class UserRequestController : ControllerBase
+    [Route("api/[controller]")]
+    [ApiController]
+    public class UserRequestController1 : ControllerBase
     {
         private readonly AppDbContext _dbContext;
-        private readonly IWebHostEnvironment _environment;
 
-        public UserRequestController(AppDbContext dbContext, IWebHostEnvironment environment)
+        public UserRequestController1(AppDbContext dbContext)
         {
             _dbContext = dbContext;
-            _environment = environment;    
-        } 
-
+        }
+        
         [HttpGet]
         public async Task<List<UserRequest>> Get()
         {
@@ -22,7 +24,7 @@ namespace BrooklynStandard.Models.Data
         }
 
         [HttpGet("{id}")]
-        public async Task<UserRequest>GetById(int id)
+        public async Task<UserRequest> GetById(int id)
         {
             return await _dbContext.UserRequests.FirstOrDefaultAsync(x => x.Id == id);
         }
@@ -31,42 +33,20 @@ namespace BrooklynStandard.Models.Data
         public async Task<ActionResult> Create([FromBody] UserRequest userRequest)
         {
             if(string.IsNullOrWhiteSpace(userRequest.FullName) ||
-            string.IsNullOrWhiteSpace(userRequest.Email) ||
-            string.IsNullOrWhiteSpace(userRequest.Request))
+            string.IsNullOrEmpty(userRequest.Email) ||
+            string.IsNullOrEmpty(userRequest.Request))
             {
                 return BadRequest("Invalid Request");
             }
             await _dbContext.UserRequests.AddAsync(userRequest);
             await _dbContext.SaveChangesAsync();
+
             return CreatedAtAction(nameof(GetById), new { id = userRequest.Id }, userRequest);
         }
 
-        [HttpPut]
-        public async Task<ActionResult> Update([FromBody] UserRequest userRequest)
+        public IActionResult UploadFile(IFormFile file)
         {
-            if(userRequest.Id == 0 ||
-            string.IsNullOrWhiteSpace(userRequest.FullName) ||
-            string.IsNullOrWhiteSpace(userRequest.Request))
-            {
-                return BadRequest("Invalid Request");
-            }
-
-            _dbContext.UserRequests.Update(userRequest);
-            await _dbContext.SaveChangesAsync();
-            return Ok();
-        }
-
-        [HttpDelete("{id}")]
-        public async Task<ActionResult> Delete(int id)
-        {
-            var userRequest = await GetById(id);
-            if(userRequest is null)
-                return NotFound();
-
-            _dbContext.UserRequests.Remove(userRequest);
-            await _dbContext.SaveChangesAsync();
-
-            return Ok();    
+            return Ok(new UploadFileController().Upload(file));
         }
     }
 }
