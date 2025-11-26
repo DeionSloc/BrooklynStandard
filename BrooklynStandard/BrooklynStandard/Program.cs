@@ -4,7 +4,9 @@ using System.Reflection.Metadata;
 using System;
 using System.Collections.Immutable;
 using Microsoft.EntityFrameworkCore;
+using BrooklynStandard;
 var builder = WebApplication.CreateBuilder(args);
+
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
     options.UseNpgsql(builder.Configuration.GetConnectionString("DbConnection"));
@@ -13,7 +15,6 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
-
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {

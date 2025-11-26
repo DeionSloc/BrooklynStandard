@@ -25,7 +25,7 @@ namespace BrooklynStandard.Models.Data
         public string? Company { get; set; }
 
         [Column("file")]
-        public IFormFile? File { get; set; }
+        public string? File { get; set; }
 
 
         [Column("request")]

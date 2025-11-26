@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using BrooklynStandard.Models;
+using BrooklynStandard.Models.Data;
 
 namespace BrooklynStandard.Controllers;
 
@@ -43,6 +44,18 @@ public class HomeController : Controller
         return View();
     }
 
+    [HttpPost]
+    public void UserRequest(int id, string fullname, string email, int number, string company, string file, string request)
+    {
+        UserRequest userRequest = new UserRequest();
+        userRequest.Id = id;
+        userRequest.FullName = fullname;
+        userRequest.Email = email;
+        userRequest.Number = number;
+        userRequest.Company = company;
+        userRequest.File = file;
+        userRequest.Request = request;
+    }
     public IActionResult About()
     {
         return View();
